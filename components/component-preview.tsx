@@ -1648,21 +1648,33 @@ function MUIPreview({ component, options }: ComponentPreviewProps) {
       )
     case "CircularProgress":
       const circularColors = {
-        primary: "text-blue-600",
-        secondary: "text-purple-600",
-        success: "text-green-600",
-        error: "text-red-600",
-        info: "text-cyan-600",
-        warning: "text-orange-600",
+        primary: "text-blue-500",
+        secondary: "text-purple-500",
+        success: "text-green-500",
+        error: "text-red-500",
+        info: "text-cyan-500",
+        warning: "text-orange-500",
       }
 
       return (
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center p-4">
           <div
             className={`${circularColors[options.color as keyof typeof circularColors]} ${options.variant === "indeterminate" ? "animate-spin" : ""}`}
             style={{ width: options.size, height: options.size }}
           >
             <svg className="w-full h-full" viewBox="0 0 24 24">
+              {/* Background circle */}
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth={options.thickness}
+                fill="none"
+                strokeLinecap="round"
+                className="opacity-20"
+              />
+              {/* Progress circle */}
               <circle
                 cx="12"
                 cy="12"
@@ -1672,12 +1684,22 @@ function MUIPreview({ component, options }: ComponentPreviewProps) {
                 fill="none"
                 strokeLinecap="round"
                 strokeDasharray={
-                  options.variant === "determinate" ? `${(options.value / 100) * 62.83} 62.83` : undefined
+                  options.variant === "determinate" ? `${(options.value / 100) * 62.83} 62.83` : "15.7 62.83"
                 }
-                className={options.variant === "indeterminate" ? "opacity-25" : ""}
+                strokeDashoffset={options.variant === "determinate" ? "0" : undefined}
+                className={options.variant === "indeterminate" ? "animate-spin" : ""}
+                style={{
+                  transformOrigin: "center",
+                  transform: "rotate(-90deg)"
+                }}
               />
             </svg>
           </div>
+          {options.variant === "determinate" && (
+            <div className="absolute text-sm font-medium text-gray-700">
+              {options.value}%
+            </div>
+          )}
         </div>
       )
     case "Alert":
