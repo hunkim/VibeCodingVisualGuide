@@ -4,6 +4,8 @@
 
 An interactive component reference specifically designed for vibe coding - helping developers who struggle with naming and describing UI components when working with AI coding assistants.
 
+**🌐 [Try it now - Live Demo](https://vibe-coding-visual-guide.vercel.app/)**
+
 ## 🤔 The Problem
 
 Ever found yourself trying to describe a component to an AI and saying things like:
@@ -13,6 +15,17 @@ Ever found yourself trying to describe a component to an AI and saying things li
 - "The accordion... or collapsible... whatever it's called"
 
 **You're not alone!** Many developers struggle with UI component vocabulary, making vibe coding frustrating and imprecise.
+
+## 🚀 Quick Start
+
+**Want to try it right now?** No installation needed!
+
+👉 **[Open Vibe Coding Visual Guide](https://vibe-coding-visual-guide.vercel.app/)** 👈
+
+1. Browse components in the sidebar
+2. See live previews and customize options
+3. Copy perfect vibe prompts or code
+4. Use with ChatGPT, Claude, or any AI assistant
 
 ## ✨ The Solution
 
