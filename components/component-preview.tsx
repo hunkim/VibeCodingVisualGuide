@@ -582,7 +582,7 @@ function ShadcnPreview({ component, options }: ComponentPreviewProps) {
           { month: "May", value: 2000 },
         ],
       }
-      const data = chartData[options.data as keyof typeof chartData]
+      const data = chartData[options.data as keyof typeof chartData] || chartData.sales
 
       return (
         <div className="w-80 h-64 p-4 border border-gray-300 rounded">
@@ -973,13 +973,13 @@ function HTMLPreview({ component, options }: ComponentPreviewProps) {
         </ol>
       )
     case "List (Unordered)":
-      const listStyleClass =
-        {
-          disc: "list-disc",
-          circle: "list-circle",
-          square: "list-square",
-          none: "list-none",
-        }[options.style] || "list-disc"
+      const listStyles = {
+        disc: "list-disc",
+        circle: "list-circle",
+        square: "list-square",
+        none: "list-none",
+      } as const
+      const listStyleClass = listStyles[options.style as keyof typeof listStyles] || "list-disc"
 
       return (
         <ul className={`${listStyleClass} list-inside space-y-1 w-64`}>
