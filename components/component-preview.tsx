@@ -1528,18 +1528,18 @@ function MUIPreview({ component, options }: ComponentPreviewProps) {
         small: { container: "h-4 w-7", thumb: "h-3 w-3" },
         medium: { container: "h-5 w-9", thumb: "h-4 w-4" },
       }
-      const size = switchSizes[options.size as keyof typeof switchSizes]
+      const size = switchSizes[options.size as keyof typeof switchSizes] || switchSizes.medium
 
       return (
         <div className="flex items-center space-x-2">
           <div
-            className={`${size.container} ${switchColors[options.color as keyof typeof switchColors]} rounded-full p-1 transition-colors ${options.disabled ? "opacity-50" : ""}`}
+            className={`${size.container} ${switchColors[options.color as keyof typeof switchColors] || switchColors.primary} rounded-full p-1 transition-colors ${options.disabled ? "opacity-50" : ""}`}
           >
             <div
               className={`${size.thumb} bg-white rounded-full shadow-md transform transition-transform ${options.checked ? "translate-x-full" : ""}`}
             ></div>
           </div>
-          <label className="text-sm text-gray-700">{options.label}</label>
+          <label className="text-sm text-gray-700">{options.label || "Switch"}</label>
         </div>
       )
     case "Radio":
@@ -1648,56 +1648,65 @@ function MUIPreview({ component, options }: ComponentPreviewProps) {
       )
     case "CircularProgress":
       const circularColors = {
-        primary: "text-blue-500",
-        secondary: "text-purple-500",
-        success: "text-green-500",
-        error: "text-red-500",
-        info: "text-cyan-500",
-        warning: "text-orange-500",
+        primary: "#2563eb", // blue-600
+        secondary: "#9333ea", // purple-600
+        success: "#16a34a", // green-600
+        error: "#dc2626", // red-600
+        info: "#0891b2", // cyan-600
+        warning: "#ea580c", // orange-600
       }
+      const color = circularColors[options.color as keyof typeof circularColors] || circularColors.primary
+      const circularSize = options.size || "40px"
+      const thickness = options.thickness || 3.6
 
       return (
-        <div className="flex items-center justify-center p-4">
+        <div className="flex items-center justify-center p-4 relative">
           <div
-            className={`${circularColors[options.color as keyof typeof circularColors]} ${options.variant === "indeterminate" ? "animate-spin" : ""}`}
-            style={{ width: options.size, height: options.size }}
+            className={options.variant === "indeterminate" ? "animate-spin" : ""}
+            style={{ width: circularSize, height: circularSize }}
           >
-            <svg className="w-full h-full" viewBox="0 0 24 24">
+            <svg className="w-full h-full -rotate-90" viewBox="0 0 24 24">
               {/* Background circle */}
               <circle
                 cx="12"
                 cy="12"
                 r="10"
-                stroke="currentColor"
-                strokeWidth={options.thickness}
+                stroke="#e5e7eb"
+                strokeWidth={thickness}
                 fill="none"
                 strokeLinecap="round"
-                className="opacity-20"
               />
               {/* Progress circle */}
               <circle
                 cx="12"
                 cy="12"
                 r="10"
-                stroke="currentColor"
-                strokeWidth={options.thickness}
+                stroke={color}
+                strokeWidth={thickness}
                 fill="none"
                 strokeLinecap="round"
                 strokeDasharray={
-                  options.variant === "determinate" ? `${(options.value / 100) * 62.83} 62.83` : "15.7 62.83"
+                  options.variant === "determinate" 
+                    ? `${(Math.min(100, Math.max(0, options.value || 75)) / 100) * 62.83} 62.83` 
+                    : "15.7 62.83"
                 }
-                strokeDashoffset={options.variant === "determinate" ? "0" : undefined}
+                strokeDashoffset={
+                  options.variant === "indeterminate" ? "47.1" : "0"
+                }
                 className={options.variant === "indeterminate" ? "animate-spin" : ""}
                 style={{
-                  transformOrigin: "center",
-                  transform: "rotate(-90deg)"
+                  animationDuration: options.variant === "indeterminate" ? "1.4s" : undefined,
+                  animationTimingFunction: options.variant === "indeterminate" ? "ease-in-out" : undefined,
+                  animationIterationCount: options.variant === "indeterminate" ? "infinite" : undefined,
                 }}
               />
             </svg>
           </div>
           {options.variant === "determinate" && (
-            <div className="absolute text-sm font-medium text-gray-700">
-              {options.value}%
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="text-sm font-medium text-gray-700">
+                {Math.round(options.value || 75)}%
+              </span>
             </div>
           )}
         </div>
@@ -1820,20 +1829,20 @@ function MUIPreview({ component, options }: ComponentPreviewProps) {
 
       return (
         <div className="relative w-80 h-64">
-          {options.open && (
+          {(options.open !== false) && (
             <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
               <div
-                className={`bg-white rounded-lg shadow-xl ${dialogSizes[options.maxWidth as keyof typeof dialogSizes]} ${options.fullWidth ? "w-full" : ""} ${options.fullScreen ? "w-full h-full rounded-none" : "max-h-96"} overflow-hidden`}
+                className={`bg-white rounded-lg shadow-xl ${dialogSizes[options.maxWidth as keyof typeof dialogSizes] || dialogSizes.md} ${options.fullWidth ? "w-full" : ""} ${options.fullScreen ? "w-full h-full rounded-none" : "max-h-96"} overflow-hidden`}
               >
                 <div className="px-6 py-4 border-b border-gray-200">
-                  <h2 className="text-lg font-semibold">{options.title}</h2>
+                  <h2 className="text-lg font-semibold text-gray-900">{options.title || "Dialog Title"}</h2>
                 </div>
                 <div className="px-6 py-4">
-                  <p className="text-gray-600">{options.content}</p>
+                  <p className="text-gray-600">{options.content || "This is a dialog content example. Dialogs are used to display important information or require user interaction."}</p>
                 </div>
                 <div className="px-6 py-4 border-t border-gray-200 flex justify-end space-x-2">
-                  <button className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded">Cancel</button>
-                  <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">OK</button>
+                  <button className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded transition-colors">Cancel</button>
+                  <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">OK</button>
                 </div>
               </div>
             </div>
